@@ -4,7 +4,9 @@ const selectType = document.getElementById("select_type");
 
 
 /* FUNZIONE PER DETERMINARE IL TIPO DI CARD DA MOSTRARE */
-
+/* avrei potuto mettere nell'html direttamente i value 
+    "animal, vegetable, all, user invece dei valori numerici, avrei potuto 
+    evitare la funzione typeToShow*/
 function typeToShow(typeCard){
 
     let showType = "";
@@ -22,28 +24,26 @@ function typeToShow(typeCard){
 }
 
 /* FUNZIONE PER CREARE LA CARD */
-
-function createCardIcon(icons){
+/**
+ * 
+ * @param {{name: string}} icon // da qui posso modificare il tipo di dato
+ */
+function createCardIcon(icon){
 
     /* USO IL DESCTRURING DELL'OGGETTO PASSATO ALLA FUNZIONE PER PRENDERE TUTTE LE PROPRIETA DI CUI HO BISOGNO */
-    let { name, prefix, type, family } = icons; 
-    
-    let stringName = `${name}`;
-    let upperName = stringName.toUpperCase();
-    
-
-    
+    let { name, prefix, type, family } = icon; 
+          
     cardContainer.innerHTML += `<div class="flex-center card-icon">
                                         <i class="${family} ${prefix}${name} color-${type}"></i>
-                                        <h6>${upperName}</h6>
+                                        <h6>${name.toUpperCase()}</h6>
                                     </div>`;
 }
 
 /* FOREACH PER AVERE SUBITO A SCHERMATA TUTTE LE ICONE */
 
-allIcons.forEach(function(icons) {
-    createCardIcon(icons)
-});                  
+allIcons.forEach(function(icon) {
+    createCardIcon(icon)
+});  
 
 selectType.addEventListener("change", function() { 
 
@@ -55,25 +55,31 @@ selectType.addEventListener("change", function() {
     const selectedTypeCard = typeToShow(parseInt(typeCard));
     console.log(selectedTypeCard);
     
-    const arrayType = [];
+    let arrayType = [];
 
     if (selectedTypeCard === "") {
 
-        allIcons.forEach(function(icons) {
-            createCardIcon(icons)
+        allIcons.forEach(function(icon) {
+            createCardIcon(icon)
         });                  
     } else { 
-
-        allIcons.forEach(function(icons) {
+    /************ CORREZIONE USANDO *FILTER* ***************/    
+        arrayType = allIcons.filter(function(icon) {
+            // voglio quest'elemento nell'array finale?
+            return icon.type === selectedTypeCard
+        })
+        
+    /*********** FILTRO MANUALE *********/    
+        /* allIcons.forEach(function(icons) {
             let {type} = icons;
-            /* console.log(type); */
+             console.log(type); 
             if (type === selectedTypeCard){
                 arrayType.push(icons);
             }  
-        });
+        }); */
         console.log(arrayType)
-        arrayType.forEach(function(icons){
-            createCardIcon(icons);
+        arrayType.forEach(function(icon){
+            createCardIcon(icon);
         })
 
     }
